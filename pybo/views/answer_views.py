@@ -1,14 +1,16 @@
-from flask import Blueprint, url_for, request, render_template
+from flask import Blueprint, url_for, request, render_template, g
 from werkzeug.utils import redirect
 from datetime import datetime
 from pybo import db
 from pybo.models import Question, Answer
 from ..forms import AnswerForm
+from pybo.views.auth_views import login_required
 
 bp = Blueprint("answer", __name__, url_prefix="/answer")
 
 
 @bp.route("/create/<int:question_id>", methods=("POST",))
+@login_required
 def create(question_id):
     form = AnswerForm()
     question = Question.query.get_or_404(question_id)
@@ -18,7 +20,8 @@ def create(question_id):
         answer = Answer(
             question=question,
             content=content,
-            create_date=datetime.now()
+            create_date=datetime.now(),
+            user=g.user
         )
         db.session.add(answer)
         db.session.commit()

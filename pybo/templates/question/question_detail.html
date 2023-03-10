@@ -8,9 +8,18 @@
     <div class="card-body">
       <div class="card-text" style="white-space: pre-line;">{{ question.content }}</div>
       <div class="d-flex justify-content-end">
-        <div class="badge bg-light text-dark p-2">
-          {{ question.create_date|datetime }}
+        <div class="badge bg-light text-dark p-2 text-start">
+          <div class="mb-2">{{ question.user.username }}</div>
+          <div>{{ question.create_date|datetime }}</div>
         </div>
+      </div>
+      <div class="my-3">
+        {% if g.user == question.user %}
+        <a href="{{ url_for('question.modify', question_id=question.id) }}"
+          class="btn btn-sm btn-outline-secondary">수정</a>
+        <a href="javascript:void(0)" class="delete btn btn-sm btn-outline-secondary"
+          data-uri="{{ url_for('question.delete', question_id=question.id) }}">삭제</a>
+        {% endif %}
       </div>
     </div>
   </div>
@@ -21,8 +30,9 @@
     <div class="card-body">
       <div class="card-text" style="white-space: pre-line;">{{ answer.content }}</div>
       <div class="d-flex justify-content-end">
-        <div class="badge bg-light text-dark p-2">
-          {{ answer.create_date|datetime }}
+        <div class="badge bg-light text-dark p-2 text-start">
+          <div class="mb-2">{{ question.user.username }}</div>
+          <div>{{ answer.create_date|datetime }}</div>
         </div>
       </div>
     </div>
@@ -39,9 +49,23 @@
 
     {% endfor %}
     <div class="mb-3">
-      <textarea name="content" id="content" class="form-control" rows="10"></textarea>
+      <textarea {% if not g.user %}disabled{% endif %} name="content" id="content" class="form-control"
+        rows="10"></textarea>
     </div>
     <input type="submit" value="답변등록" class="btn btn-primary">
   </form>
 </div>
+{% endblock %}
+
+{% block script %}
+<script type='text/javascript'>
+  const delete_elements = document.getElementsByClassName("delete");
+  Array.from(delete_elements).forEach(function (element) {
+    element.addEventListener('click', function () {
+      if (confirm("정말로 삭제하시겠습니까?")) {
+        location.href = this.dataset.uri;
+      };
+    });
+  });
+</script>
 {% endblock %}
