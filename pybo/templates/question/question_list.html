@@ -7,6 +7,7 @@
     <thead class="bg-dark text-light">
       <tr class="text-center">
         <th scope="col">번호</th>
+        <th scope="col">추천</th>
         <th scope="col" style="width: 50%;">제목</th>
         <th scope="col">글쓴이</th>
         <th scope="col">작성일시</th>
@@ -19,6 +20,11 @@
       <tr class="text-center">
         <td>
           {{ question_list.total - ((question_list.page - 1) * question_list.per_page) - loop.index0 }}
+        </td>
+        <td>
+          {% if question.voter|length > 0 %}
+          <span class="badge text-bg-info px-2 py-1">{{ question.voter|length }}</span>
+          {% endif %}
         </td>
         <td class="text-start">
           <a href="{{ url_for('question.detail', question_id=question.id) }}">{{ question.subject }}</a>
