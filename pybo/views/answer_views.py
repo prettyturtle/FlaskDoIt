@@ -26,7 +26,7 @@ def create(question_id):
         db.session.add(answer)
         db.session.commit()
 
-        return redirect(url_for("question.detail", question_id=question_id))
+        return redirect("{}#answer_{}".format(url_for("question.detail", question_id=question_id), answer.id))
 
     return render_template("question/question_detail.html", question=question, form=form)
 
@@ -44,7 +44,7 @@ def modify(answer_id):
             form.populate_obj(answer)
             answer.modify_date = datetime.now()  # 수정일시 저장
             db.session.commit()
-            return redirect(url_for('question.detail', question_id=answer.question.id))
+            return redirect("{}#answer_{}".format(url_for("question.detail", question_id=answer.question.id), answer.id))
     else:
         form = AnswerForm(obj=answer)
     return render_template('answer/answer_form.html', form=form)
